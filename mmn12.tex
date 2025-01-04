@@ -252,8 +252,7 @@ AdaBoostClassifier(
 \end{lstlisting}
 \HE
 
-והגרפים המתאימים הם:
-
+והגרפים המתאימים עבור מחיצת ה-\ToEn{Test} הם:
 
 \CreateFigure{images/roc_curve_global_Orb_ADABOOST2_test.png}{עקום \ToEn{ROC}}
 \CreateFigure{images/prc_curve_global_Orb_ADABOOST2_test.png}{עקום \ToEn{Precision-Recall}}
@@ -273,9 +272,37 @@ AdaBoostClassifier(
 \newpage
 \HE
 \section*{שאלה {2}}
-בחלק 1 נדרשנו לממש את הגלאים הנ"ל:
+בשאלה 2 השתמשתי באותו ה- \ToEn{pipeline} , עם הבדלים מעטים בלבד: שימוש בטנזורים (התוצר שיוצא מתוך הרשת), מימדים שונים במעט, וכו'.
+
+גם כאן בשלב האחרון בדקתי את אותם מסווגים ואלה התוצאות שלהם:
 
 \CreateCustomTable{ביצועי המסווגים השונים}{data/results_extractor_VGG.csv}
+
+כל ארבעת המסווגים הגיעו לתוצאות דומות, אם כי כאן המוצלח ביותר היה \ToEn{XGB2} , אשר הפרמטרים שלו הם:
+\EN
+\begin{lstlisting}
+'XGB2': 
+XGBClassifier(
+    objective='multi:softmax',  # Multiclass classification
+    num_class=8,  # Number of classes
+    max_depth=3,  # Tree depth
+    learning_rate=0.03,  # Learning rate (eta)
+    n_estimators=10,  # Number of trees
+    random_state=42  # Seed for reproducibility
+    ),
+\end{lstlisting}
+\HE
+
+ואילו הגרפים שמתאימים לתוצאות שלו הם:
+
+
+
+\CreateFigure{images/roc_curve_global_VGG_XGB2_test.png}{עקום \ToEn{ROC}}
+\CreateFigure{images/prc_curve_global_VGG_XGB2_test.png}{עקום \ToEn{Precision-Recall}}
+\CreateFigure{images/confusion_matrix_VGG_XGB2_test.png}{מטריצת הבלבול}
+
+
+
 
 \newpage
 \HE
