@@ -9,7 +9,8 @@
 \usepackage{pgfplotstable}
 \usepackage{enumitem} % Custom list handling
 \usepackage{booktabs} % For better table styling
-
+\usepackage{listings}
+\usepackage{xcolor}
 
 \pgfplotsset{compat=1.18} % Ensure compatibility
 \usepackage{caption} % For \captionof
@@ -89,6 +90,29 @@
     ]{#2}
     \end{table}
 }
+
+
+% Add a figure
+\newcommand{\CreateFigure}[2]{%
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[width=\textwidth]{#1} % Use the first parameter as the filename
+        \caption{#2} % Use the second parameter as the caption
+        \label{fig:#1} % Optional: Use the filename as the label (or adjust as needed)
+    \end{figure}
+}
+
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,  % Use a terminal font and reduce the size
+    frame=single,                       % Add a frame around the code
+    xleftmargin=1em,                    % Adjust left margin
+    showspaces=false,                   % Do not show spaces explicitly
+    showstringspaces=false,             % Do not show spaces in strings
+    breaklines=true,                    % Enable line breaking
+    backgroundcolor=\color{gray!10},    % Light gray background
+}
+
 
 
 % --------------
@@ -190,7 +214,8 @@
 \EN
 \begin{framed}
 \begin{verbatim}
-python src/mmn12_q1.py
+cd src
+python mmn12_q1.py
 \end{verbatim}
 \end{framed}
 \HE
@@ -199,7 +224,7 @@ python src/mmn12_q1.py
 \EN
 \begin{framed}
 \begin{verbatim}
-python src/mmn12_q1.py --stage=3
+python mmn12_q1.py --stage=3
 \end{verbatim}
 \end{framed}
 \HE
@@ -212,9 +237,29 @@ python src/mmn12_q1.py --stage=3
 \section*{תשובות לשאלות}
 הטבלה:
 
-
-
 \CreateCustomTable{ביצועי המסווגים השונים}{data/results_extractor_Orb.csv}
+\HE
+על-פי מדד ה-\ToEn{AUC}, נראה שהמסווג המוצלח ביותר עבור \ToEn{Orb} הוא \ToEn{ADABOOST2}. הפרמטרים שבהם השתמשתי עבורו הם:
+\EN
+\begin{lstlisting}
+'ADABOOST2':
+AdaBoostClassifier(
+    estimator=DecisionTreeClassifier(max_depth=2), 
+    n_estimators=20,  # Number of boosting rounds
+    learning_rate=0.2,  # Learning rate
+    random_state=42  # Seed for reproducibility
+)
+\end{lstlisting}
+\HE
+
+והגרפים המתאימים הם:
+
+
+\CreateFigure{images/roc_curve_global_Orb_ADABOOST2_test.png}{עקום \ToEn{ORC}}
+\CreateFigure{images/prc_curves_Orb_ADABOOST2_test.png}{עקום \ToEn{Precision-Recall}}
+\CreateFigure{images/confusion_matrix_Orb_ADABOOST2_test.png}{מטריצת הבלבול}
+
+
 
 
 % \CreateCSVTable{data/results_extractor_Orb.csv}{accuracy,AUC}{2}{Results for ORB Extractor}
@@ -225,17 +270,12 @@ python src/mmn12_q1.py --stage=3
 
 
 
-
-
-\HE
-
-\EN
-
+\newpage
 \HE
 \section*{שאלה {2}}
 בחלק 1 נדרשנו לממש את הגלאים הנ"ל:
-\EN
 
+\CreateCustomTable{ביצועי המסווגים השונים}{data/results_extractor_VGG.csv}
 
 \newpage
 \HE
