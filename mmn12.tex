@@ -8,6 +8,7 @@
 \usepackage{pgfplots} % For plotting
 \usepackage{pgfplotstable}
 \usepackage{enumitem} % Custom list handling
+\usepackage{booktabs} % For better table styling
 
 
 \pgfplotsset{compat=1.18} % Ensure compatibility
@@ -63,6 +64,19 @@
     \foreignlanguage{#1}{#2} % Switch to the specified language for the given text
 }
 
+\newcommand{\CreateStringTable}[1]{%
+    % #1: Path to the CSV file
+    \begin{table}[htbp]
+        \centering
+        \pgfplotstabletypeset[
+            col sep=comma,
+            string type,
+            every head row/.style={before row=\toprule, after row=\midrule},
+            every last row/.style={after row=\bottomrule},
+            every column/.style={string type} % Treat all columns as strings
+        ]{#1} % CSV file path
+    \end{table}
+}
 % Example: Switch to Hebrew for this section
 %    \switchlang{hebrew}{זוהי טקסט בעברית}
 
@@ -186,7 +200,14 @@ python src/mmn12_q1.py --stage=3
 \ToEn{ROC}, חישוב ה-\ToEn{AUC} וגם \ToEn{confusion matrix} ו- \ToEn{precision-recall} 
 
 \section*{תשובות לשאלות}
+הטבלה:
+\EN
 
+\CreateStringTable{data/results_extractor_Orb.csv}
+
+
+
+\HE
 
 \EN
 
