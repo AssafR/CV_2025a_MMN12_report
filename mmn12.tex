@@ -64,13 +64,12 @@
     \foreignlanguage{#1}{#2} % Switch to the specified language for the given text
 }
 
-
-
-% Macro to create a table from CSV with dynamic handling
-\newcommand{\CreateCSVTable}[3][2]{%
+% Macro to create a table from CSV with specified string fields
+\newcommand{\CreateCSVTable}[4][2]{%
     % #1: Precision for numerical fields (default: 2)
     % #2: Path to the CSV file
     % #3: Caption for the table
+    % #4: Comma-separated list of string field names
     \begin{table}[htbp]
         \centering
         \caption{#3}
@@ -79,22 +78,12 @@
             header=true, % Use the first row as header
             every head row/.style={before row=\toprule, after row=\midrule}, % Header row style
             every last row/.style={after row=\bottomrule}, % Last row style
-            string type, % Treat all columns as strings by default
-            % Dynamically apply precision to numeric columns
-            columns/.style={
-                % Treat each column dynamically
-                column type={c},
-                postproc cell content/.append code={%
-                    \begingroup
-                    \pgfkeys{/pgf/number format/fixed,/pgf/number format/precision=#1}%
-                    \ifnum\pdfstrcmp{\pgfplotstablecolname}{Classifier}=0%
-                        \pgfplotsretval% Leave strings as-is
-                    \else%
-                        \expandafter\pgfmathprintnumber\expandafter{\pgfplotsretval}%
-                    \fi%
-                    \endgroup
-                }
-            }
+            string type, % Default to string type for safety
+            columns/.style={%
+                /pgf/number format/fixed, /pgf/number format/precision=#1 % Global numeric precision
+            },
+            % Define specific string fields
+            columns/{#4}/.style={string type}
         ]{#2} % Path to the CSV file
     \end{table}
 }
@@ -225,7 +214,8 @@ python src/mmn12_q1.py --stage=3
 \section*{תשובות לשאלות}
 הטבלה:
 \EN
-\CreateCSVTable[2]{data/results_extractor_Orb.csv}{Results for Extractor ORB}
+
+\CreateCSVTable[2]{data/results_extractor_Orb.csv}{Results for Extractor ORB}{classifier,extractor}
 
 \HE
 
