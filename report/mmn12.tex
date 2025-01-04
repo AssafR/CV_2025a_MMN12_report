@@ -1,0 +1,227 @@
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says "Start here"
+% --------------------------------------------------------------
+ 
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{pgfplots} % For plotting
+\usepackage{pgfplotstable}
+\usepackage{enumitem} % Custom list handling
+\usepackage{booktabs} % For better table styling
+
+
+\pgfplotsset{compat=1.18} % Ensure compatibility
+\usepackage{caption} % For \captionof
+\usepackage{mathrsfs,amsmath}   %The amsmath package is included for \xrightarrow
+\usepackage[top=2cm,bottom=2cm,left=2.5cm,right=2cm]{geometry}
+\usepackage{array} % For better column formatting
+\usepackage{ragged2e} % For \RaggedRight to ensure proper alignment
+% \usepackage{polyglossia}
+\usepackage{framed}
+
+
+\usepackage[english, bidi=basic, layout=sectioning.tabular]{babel}
+\babelprovide[import,main]{hebrew}
+\babelfont{sf}
+          [Ligatures={Common,Discretionary,TeX}]{Libertinus Sans}
+\babelfont{tt}
+          [Ligatures=TeX]{Libertinus Mono}
+
+
+\setmainfont{David CLM}[Script=Hebrew]
+%\setmainfont{Noto Sans Hebrew}[Language=Hebrew, Script=Hebrew]
+
+\babelfont[hebrew]{rm}[Script=Hebrew]{David CLM}
+\usepackage{fontspec}
+
+\newfontfamily\hebrewfont[Script=Hebrew]{David CLM} %This font will work in Overleaf, Linux and Mac installs, if you're running windows you'd need to pick the right ones
+\newfontfamily\hebrewfontsf[Script=Hebrew]{Miriam CLM}
+\newfontfamily\englishfont{Times New Roman} % English font
+%\newfontfamily\englishfont{TeX Gyre Termes} % Robust alternative to Times New Roman
+          
+% [Ligatures={Common,Discretionary,TeX}]{Libertinus Serif} % Or any font that supports Hebrew.
+
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+
+\newcommand{\EN}{\selectlanguage{english}}
+\newcommand{\HE}{\selectlanguage{hebrew} \vspace{0pt}}
+\newcommand{\ToEn}[1]{\EN{#1}\HE}
+
+% Define the custom itemize environment for hebrewlist
+\newlist{hebrewlist}{itemize}{1} % Create a new list type
+\setlist[hebrewlist,1]{%
+    label=\fixNumbering{\thehebrewCounter}, % Use Hebrew counter with tightly bound dot
+    ref=\thehebrewCounter, % Reference format (if needed for cross-referencing)
+    leftmargin=2em, % Adjust the left margin
+    labelsep=1em, % Adjust spacing between the label and the text
+    itemsep=0.5\baselineskip, % Adjust spacing between items
+    before=\usecounter{hebrewCounter} % Enable the Hebrew counter
+}
+
+% Define the macro to switch languages
+\newcommand{\switchlang}[2]{%
+    \foreignlanguage{#1}{#2} % Switch to the specified language for the given text
+}
+
+\newcommand{\CreateStringTable}[1]{%
+    % #1: Path to the CSV file
+    \begin{table}[htbp]
+        \centering
+        \pgfplotstabletypeset[
+            col sep=comma,
+            string type,
+            every head row/.style={before row=\toprule, after row=\midrule},
+            every last row/.style={after row=\bottomrule},
+            every column/.style={string type} % Treat all columns as strings
+        ]{#1} % CSV file path
+    \end{table}
+}
+% Example: Switch to Hebrew for this section
+%    \switchlang{hebrew}{זוהי טקסט בעברית}
+
+
+% --------------
+
+
+% Redefine the itemize bullets globally
+\renewcommand\labelitemi{$\bullet$}
+\renewcommand\labelitemii{$\circ$} % Open circle for the second level
+\renewcommand\labelitemiii{$\star$} % Star for the third level
+
+
+% Set up a Hebrew-compatible font
+\setmainfont{David CLM} % Replace with another Hebrew-compatible font if needed
+
+% Define Hebrew labels manually using a custom counter
+\newcounter{hebrewCounter} % Create a new counter
+\renewcommand{\thehebrewCounter}{% Map the counter value to Hebrew letters
+    \ifcase\value{hebrewCounter}
+    \or א
+    \or ב
+    \or ג
+    \or ד
+    \or ה
+    \or ו
+    \or ז
+    \or ח
+    \or ט
+    \or י
+    \else ?
+    \fi
+}
+
+% Force Hebrew letter and period to act as a single unit
+\newcommand{\fixNumbering}[1]{\makebox[0pt][r]{#1\kern-0.3em.}} % Use \kern to remove space
+
+\begin{document}
+
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+\HE 
+\title{ממ"ן 12 - ראייה ממוחשבת}
+\author{אסף רזון}
+\maketitle
+בתרגיל זה  3 חלקים. 
+
+
+\ToEn{train-set} כאשר
+\ToEn{60\%} מהתמונות ישמשו לאימון, \ToEn{20\%} לוולידציה ו- \ToEn{20\%} לבדיקה.
+\section*{שאלה {1}}
+חלקו את הנתונים לנתוני אימון 
+\medskip
+\subsection*{חלוקה של הדאטה למחיצות}
+החלוקה נעשתה תוך שימוש בפונקציית \ToEn{train\_test\_split} מהספרייה, הקוד נמצא בקובץ \ToEn{split\_train\.py}.
+לאחר יצירת רשימת כל הקבצים, נעשית חלוקה לשלוש המחיצות \ToEn{Train, Validation, Test} והקבצים מופנים לפי ההסתברויות ל-3 ספריות בשמות המתאימים.
+
+\subsection*{שיטת העבודה}
+ניתן לחלק את ה-\ToEn{pipeline} לכמה שלבים, שכל אחד מהם קורא פלט מדיסק, מעבד אותו, ושומר לדיסק את השלב הבא.
+\newline
+כך ניתן לפתח כל שלב בנפרד ולחזור אחורה בלי להתחיל בכל פעם מההתחלה.
+
+השלבים הם:
+\begin{enumerate}[start=0]
+\item חלוקה של הדאטה (תמונות) למחיצות
+\item הפעלה של \ToEn{Feature Extraction} על כל התמונות ושמירת הפיצ'רים בלבד
+\item פעולת קוונטיזציה (\ToEn{Vector Quantization})  - אימון \ToEn{K-Means} על מרחב הפיצ'רים שהתקבל בשלב הקודם ושמירת המודל. מספר המרכזים שבחרתי בשלב זה הוא 128.
+\item שלב תרגום ע"י \ToEn{Bag Of Features} - לכל תמונה המאופיינת כעת ע"י סט פיצ'רים, חישוב האשכול \ToEn{(Cluster)} שאליו שייך הפיצ'ר. כעת הייצוג של התמונה הופך להיות היסטוגרמה - לכל אשכול k מהו מספר המאפיינים ששייך לו. כעת הייצוג הוא של כל תמונה כהיסטוגרמה, והייצוג הזה נשמר לדיסק.
+\item אימון מסווג אשר מקבל כקלט בשלב האימון סט של היסטוגרמה+מחלקה , ולומד לסווג היסטוגרמה למחלקה
+\item הפעלת המסווג על מחיצות \ToEn{test, validation} וחישוב המטריקות המתאימות להערכת הביצועים
+\end{enumerate}
+\par
+נשים לב כי ה-\ToEn{pipeline} הזה זהה לגמרי בין שאלות 1,2 - ההבדל העיקרי הוא איזה אלגוריתם מבצע את פעולת \ToEn{Feature Extraction}.\par
+בשאלה מס' 1 השתמשתי באלגוריתם \ToEn{Orb} ובשאלה 2 השתמשתי בשכבות הראשונות של רשת נוירונים מסוג \ToEn{VGG16} ללא השכבות האחרונות שלה - המוצא של שכבות אלה הוא 64 פיצ'רים בגודל 512, שכל אחד מהם מתאים לסביבה של ריבוע אחד בתמונה המקורית ומתאר אותו ואת סביבתו (ברשת קלאסית בגודל \ToEn{64x64} כל סביבה כזאת היא פיקסל).
+
+\subsection*{נקודות חשובות בפתרון של שני הסעיפים האלה}
+\begin{itemize}
+    \item מספר הפיצ'רים שמחזירה רשת הנוירונים הוא קבוע. אבל מספר הפיצ'רים שמוחזרים ע"י אלגוריתם כגון \ToEn{Orb} יכול להיות קטן יותר או גדול יותר מהמספר שהחלטנו לקבוע (במקרה זה - 500).\newline
+    במקרה זה יש לחתוך או להשלים את הפיצ'רים למספר קבוע, כיוון שהיישום הבסיסי של היסטוגרמה כזו מניח מספר קבוע (וסכום ערכי ההיסטוגרמה יהיה שווה למספר הזה). \newline
+    לכן חייבים לבצע התאמה למספר קבוע:
+    \begin{itemize}
+    \item  
+אם המספר קטן מדי, הוא מושלם באמצעות אפסים (כלומר פיצ'רים שערך כולם הם אפס).
+\item אם המספר גדול מדי, ממיינים את הפיצ'רים לפי ערך ה- \ToEn{Response} ושומרים רק את בעלי הערכים הגבוהים עד למספר הרצוי.
+\item ערך זה מייצג "איכות" או "בטחון" של האלגוריתם בנקודת המפתח שהתגלתה. הנקודות שבהן ערך זה גבוה הן הבולטות יותר. לכן הגיוני להשתמש בנקודות שיש להן ערך תגובה גבוה (עד למספר הנדרש) ולהתעלם מן האחרות.
+\item אם אכן יהיו הרבה "השלמות" של פיצ'רים ריקים (ערך 0) בסט האימון, סביר להניח שלפחות אחד מהאשכולות שיחושב באלגוריתם \ToEn{k-means} יהיה קרוב מאד אל הנקודה בראשית הצירים, שאליה ימופו כל הקואורדינטות הריקות הנ"ל.
+    \end{itemize}
+\item המידע הטבלאי נשמר באמצעות \ToEn{Pandas DataFrame} בפורמט \ToEn{feather} המאופיין ביעילות קריאה גבוהה. 
+\item המידע הבינארי, כגון סריאליזציה של מודלים, נשמר בפורמט \ToEn{pickle}.
+\item לצורך בניית המסווג בשלב הסופי, ניסיתי מספר אפשרויות.
+    \begin{itemize}
+        \item שתי וריאציות של מסווג \ToEn{AdaBoostClassifier}
+        \item שתי וריאציות של מסווג \ToEn{XGBClassifier}
+    \end{itemize}
+\end{itemize}
+
+\subsection*{הרצת השאלה}
+לצורך הרצת פתרון השאלה יש להריץ את הפקודה:
+\EN
+\begin{framed}
+\begin{verbatim}
+python src/mmn12_q1.py
+\end{verbatim}
+\end{framed}
+\HE
+במצב ברירת המחדל ללא פרמטרים, ההרצה תתחיל משלב 1 כפי שמפורט ב"שיטת העבודה".
+לחילופין ניתן להריץ החל משלב מתקדם יותר, למשל:
+\EN
+\begin{framed}
+\begin{verbatim}
+python src/mmn12_q1.py --stage=3
+\end{verbatim}
+\end{framed}
+\HE
+
+\section*{שאלות שנשאלנו}
+מה הפרמטרים האופטימליים של המסווג?\newline
+יש להציג את הביצועים ע"י עקומות 
+\ToEn{ROC}, חישוב ה-\ToEn{AUC} וגם \ToEn{confusion matrix} ו- \ToEn{precision-recall} 
+
+\section*{תשובות לשאלות}
+הטבלה:
+\EN
+
+\CreateStringTable{data/results_extractor_Orb.csv}
+
+
+
+\HE
+
+\EN
+
+\HE
+\section*{שאלה {2}}
+בחלק 1 נדרשנו לממש את הגלאים הנ"ל:
+\EN
+
+
+\newpage
+\HE
+\section*{שאלה {3}}
+בחלק 1 נדרשנו לממש את הגלאים הנ"ל:
+\EN
+
+
+\end{document}
