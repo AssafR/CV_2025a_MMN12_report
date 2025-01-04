@@ -64,21 +64,31 @@
     \foreignlanguage{#1}{#2} % Switch to the specified language for the given text
 }
 
-\newcommand{\CreateStringTable}[1]{%
-    % #1: Path to the CSV file
-    \begin{table}[htbp]
-        \centering
-        \pgfplotstabletypeset[
-            col sep=comma,
-            string type,
-            every head row/.style={before row=\toprule, after row=\midrule},
-            every last row/.style={after row=\bottomrule},
-            every column/.style={string type} % Treat all columns as strings
-        ]{#1} % CSV file path
-    \end{table}
-}
+
 % Example: Switch to Hebrew for this section
 %    \switchlang{hebrew}{זוהי טקסט בעברית}
+
+
+%--------------------------------
+
+
+\newcommand{\CreateCustomTable}[2]{%
+    \begin{table}[ht!]
+    \centering
+    \caption{#1}
+    \EN
+    \pgfplotstabletypeset[
+        col sep=comma, % Specifies that the CSV uses commas as the column separator
+        header=true, % Use the first row as the table header
+        columns/extractor/.style={string type}, % Format 'extractor' column as text
+        columns/classifier/.style={string type}, % Display 'classifier' with 4 decimal points
+        columns/accuracy/.style={fixed, precision=4}, % Display 'Repeatability' with 4 decimal points
+        columns/AUC/.style={fixed, precision=4}, % Display 'LocalizationError' with 4 decimal points
+        every head row/.style={before row=\hline, after row=\hline}, % Horizontal lines above and below header
+        every last row/.style={after row=\hline} % Add a horizontal line after the last row
+    ]{#2}
+    \end{table}
+}
 
 
 % --------------
@@ -201,9 +211,19 @@ python src/mmn12_q1.py --stage=3
 
 \section*{תשובות לשאלות}
 הטבלה:
-\EN
 
-\CreateStringTable{data/results_extractor_Orb.csv}
+
+
+\CreateCustomTable{ביצועי המסווגים השונים}{data/results_extractor_Orb.csv}
+
+
+% \CreateCSVTable{data/results_extractor_Orb.csv}{accuracy,AUC}{2}{Results for ORB Extractor}
+
+
+
+
+
+
 
 
 
