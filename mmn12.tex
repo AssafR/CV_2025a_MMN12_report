@@ -17,6 +17,7 @@
 \usepackage{array} % For better column formatting
 \usepackage{ragged2e} % For \RaggedRight to ensure proper alignment
 % \usepackage{polyglossia}
+\usepackage{framed}
 
 
 \usepackage[english, bidi=basic, layout=sectioning.tabular]{babel}
@@ -160,6 +161,32 @@
     \end{itemize}
 \end{itemize}
 
+\subsection*{הרצת השאלה}
+לצורך הרצת פתרון השאלה יש להריץ את הפקודה:
+\EN
+\begin{framed}
+\begin{verbatim}
+python src/mmn12_q1.py
+\end{verbatim}
+\end{framed}
+\HE
+במצב ברירת המחדל ללא פרמטרים, ההרצה תתחיל משלב 1 כפי שמפורט ב"שיטת העבודה".
+לחילופין ניתן להריץ החל משלב מתקדם יותר, למשל:
+\EN
+\begin{framed}
+\begin{verbatim}
+python src/mmn12_q1.py --stage=3
+\end{verbatim}
+\end{framed}
+\HE
+
+\section*{שאלות שנשאלנו}
+מה הפרמטרים האופטימליים של המסווג?\newline
+יש להציג את הביצועים ע"י עקומות 
+\ToEn{ROC}, חישוב ה-\ToEn{AUC} וגם \ToEn{confusion matrix} ו- \ToEn{precision-recall} 
+
+\section*{תשובות לשאלות}
+
 
 \EN
 
@@ -167,6 +194,7 @@
 \section*{שאלה {2}}
 בחלק 1 נדרשנו לממש את הגלאים הנ"ל:
 \EN
+
 
 \newpage
 \HE
