@@ -138,6 +138,17 @@ Validation precision:      0.9337 , Train Precision: 0.9965
 \include{networks}
 \EN
 
+\HE
+\subsection*{הציגו גרף של ערכי ה- \ToEn{loss}על סט הוולידציה והאימון עבור מקרה של \ToEn{over-fitting}.}
+במקרה הזה יש \ToEn{over-fitting} משילוב של הסיבות הבאות:
+\begin{itemize}
+    \item רשת פשוטה מדי \ToEn{(VGG16)}
+    \item אוגמנטציות עדינות מאד
+    \item תהליך אימון ממושך מדי ללא \ToEn{Early Stopping}
+\end{itemize}
+
+\CreateFigure{images/VGG16.png}{דוגמה להתקדמות \ToEn{Train/Validation} לאורך תהליך האימון}
+
 \newpage
 \HE
 \subsection*{
@@ -148,18 +159,5 @@ Validation precision:      0.9337 , Train Precision: 0.9965
 \clearpage
 
 \CreateFigure{images/RESNET18_5LAYERS.png}{דוגמה להתקדמות \ToEn{Train/Validation} לאורך תהליך האימון:}
-
-\HE
-\subsection*{הציגו גרף של ערכי ה- \ToEn{loss}על סט הוולידציה והאימון עבור מקרה של \ToEn{over-fitting}.}
-\HE
-במקרה הזה יש \ToEn{over-fitting} משילוב של הסיבות הבאות:
-\begin{itemize}
-    \item רשת פשוטה מדי \ToEn{(VGG16)}
-    \item אוגמנטציות עדינות מאד
-    \item תהליך אימון ממושך מדי ללא \ToEn{Early Stopping}
-\end{itemize}
-
-\CreateFigure{images/VGG16.png}{דוגמה להתקדמות \ToEn{Train/Validation} לאורך תהליך האימון}
-
 
 \HE
