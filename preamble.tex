@@ -13,21 +13,34 @@
 \usepackage{ragged2e} % For \RaggedRight to ensure proper alignment
 % \usepackage{polyglossia}
 \usepackage{framed}
+\usepackage{listings}
+\usepackage{fancyvrb} % For better verbatim rendering
 
+
+\usepackage{fontspec}
+\setmonofont{DejaVu Sans Mono}[
+    Scale=MatchLowercase,
+    BoldFont={DejaVu Sans Mono Bold},
+    ItalicFont={DejaVu Sans Mono Oblique}, % Use "Oblique" for italic
+    BoldItalicFont={DejaVu Sans Mono Bold Oblique}
+]
+
+\usepackage{minted}
+\usepackage{tcolorbox} % Add this to the preamble
 
 \usepackage[english, bidi=basic, layout=sectioning.tabular]{babel}
 \babelprovide[import,main]{hebrew}
 \babelfont{sf}
           [Ligatures={Common,Discretionary,TeX}]{Libertinus Sans}
 \babelfont{tt}
-          [Ligatures=TeX]{Libertinus Mono}
+          [Ligatures=TeX]{DejaVu Sans Mono} % Replace Fira Mono here as well
+
 
 
 \setmainfont{David CLM}[Script=Hebrew]
 %\setmainfont{Noto Sans Hebrew}[Language=Hebrew, Script=Hebrew]
 
 \babelfont[hebrew]{rm}[Script=Hebrew]{David CLM}
-\usepackage{fontspec}
 
 \newfontfamily\hebrewfont[Script=Hebrew]{David CLM} %This font will work in Overleaf, Linux and Mac installs, if you're running windows you'd need to pick the right ones
 \newfontfamily\hebrewfontsf[Script=Hebrew]{Miriam CLM}
