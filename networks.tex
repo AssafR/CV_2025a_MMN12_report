@@ -1,0 +1,98 @@
+\newpage
+\EN
+\begin{verbatim}
+Model: RESNET18_2LAYERS
+Trainable parameters: ['fc.1.weight', 'fc.1.bias']
+============================================================
+\end{verbatim}
+
+\begin{minipage}{\linewidth} % Ensure the block doesn't exceed page width
+\begin{CodeBlock}
+======================================================================================
+Layer (type:depth-idx)            Output Shape              Param #     Trainable
+======================================================================================
+ResNet                            [1, 8]             --                 Partial
+├─Conv2d: 1-1                     [1, 64, 128, 128]         (9,408)     False
+├─BatchNorm2d: 1-2                [1, 64, 128, 128]         (128)       False
+├─ReLU: 1-3                       [1, 64, 128, 128]         --          --
+├─MaxPool2d: 1-4                  [1, 64, 64, 64]           --          --
+├─Sequential: 1-5                 [1, 64, 64, 64]           --          False
+|    └─BasicBlock: 2-1            [1, 64, 64, 64]           (73,984)    False
+|    └─BasicBlock: 2-2            [1, 64, 64, 64]           (73,984)    False
+├─Sequential: 1-6                 [1, 128, 32, 32]          --          False
+|    └─BasicBlock: 2-3            [1, 128, 32, 32]          (230,144)   False
+|    └─BasicBlock: 2-4            [1, 128, 32, 32]          (295,424)   False
+├─Sequential: 1-7                 [1, 256, 16, 16]          --          False
+|    └─BasicBlock: 2-5            [1, 256, 16, 16]          (919,040)   False
+|    └─BasicBlock: 2-6            [1, 256, 16, 16]          (1,180,672) False
+├─Sequential: 1-8                 [1, 512, 8, 8]            --          False
+|    └─BasicBlock: 2-7            [1, 512, 8, 8]            (3,673,088) False
+|    └─BasicBlock: 2-8            [1, 512, 8, 8]            (4,720,640) False
+├─AdaptiveAvgPool2d: 1-9          [1, 512, 1, 1]            --          --
+├─Sequential: 1-10                [1, 8]                    --          True
+|    └─Dropout: 2-9               [1, 512]                  --           --
+|    └─Linear: 2-10               [1, 8]                    4,104       True
+======================================================================================
+Total params: 11,180,616
+Trainable params: 4,104
+Non-trainable params: 11,176,512
+Total mult-adds (Units.GIGABYTES): 2.37
+=================================================================================
+Forward/backward pass size (MB): 51.90
+Params size (MB): 44.72
+Estimated Total Size (MB): 97.41
+===================================================================================
+\end{CodeBlock}
+\end{minipage}
+
+
+\newpage
+\EN
+\centering % Center the block on the page
+\begin{verbatim}
+Model - RESNET18_5LAYERS
+Trainable parameters: 
+['layer4.1.conv2.weight', 'layer4.1.bn2.weight', 
+'layer4.1.bn2.bias', 'fc.1.weight', 'fc.1.bias']
+\end{verbatim}
+
+\begin{minipage}{\linewidth} % Ensure the block doesn't exceed page width
+\begin{CodeBlock}
+========================================================================================
+Layer (type:depth-idx)           Output Shape              Param #           Trainable
+========================================================================================
+ResNet                           [1, 8]                    --                Partial
+├─Conv2d: 1-1                    [1, 64, 128, 128]         (9,408)           False
+├─BatchNorm2d: 1-2               [1, 64, 128, 128]         (128)             False
+├─ReLU: 1-3                      [1, 64, 128, 128]         --                --
+├─MaxPool2d: 1-4                 [1, 64, 64, 64]           --                --
+├─Sequential: 1-5                [1, 64, 64, 64]           --                False
+|    └─BasicBlock: 2-1           [1, 64, 64, 64]           (73,984)          False
+|    └─BasicBlock: 2-2           [1, 64, 64, 64]           (73,984)          False
+├─Sequential: 1-6                [1, 128, 32, 32]          --                False
+|    └─BasicBlock: 2-3           [1, 128, 32, 32]          (230,144)         False
+|    └─BasicBlock: 2-4           [1, 128, 32, 32]          (295,424)         False
+├─Sequential: 1-7                [1, 256, 16, 16]          --                False
+|    └─BasicBlock: 2-5           [1, 256, 16, 16]          (919,040)         False
+|    └─BasicBlock: 2-6           [1, 256, 16, 16]          (1,180,672)       False
+├─Sequential: 1-8                [1, 512, 8, 8]            --                Partial
+|    └─BasicBlock: 2-7           [1, 512, 8, 8]            (3,673,088)       False
+|    └─BasicBlock: 2-8           [1, 512, 8, 8]            4,720,640         Partial
+├─AdaptiveAvgPool2d: 1-9         [1, 512, 1, 1]            --                --
+├─Sequential: 1-10               [1, 8]                    --                True
+|    └─Dropout: 2-9              [1, 512]                  --                --
+|    └─Linear: 2-10              [1, 8]                    4,104             True
+==========================================================================
+Total params: 11,180,616
+Trainable params: 2,364,424
+Non-trainable params: 8,816,192
+Total mult-adds (Units.GIGABYTES): 2.37
+======================================================================
+Input size (MB): 0.79
+Forward/backward pass size (MB): 51.90
+Params size (MB): 44.72
+Estimated Total Size (MB): 97.41
+===========================================================================
+\end{CodeBlock}
+\end{minipage}
+\HE
