@@ -78,24 +78,26 @@ for param_group in optimizer.param_groups:
 \EN
 \begin{tcolorbox}[colframe=black, colback=gray!5, boxrule=0.5mm, sharp corners]
 \begin{verbatim}
-Epoch 9/50
- Training  : 100%|██████████| 214/214 [00:02<00:00, 103.95it/s]
- Validation: 100%|██████████| 76/76 [00:00<00:00, 143.95it/s]
- Training Loss:      0.1960, Validation Loss:      0.1998
- Training Precision: 0.9380, Validation Precision: 0.9287
- Learning Rate: 0.000125
-Early stopping triggered. Patience: 2
-Metrics saved to ../report/data/RESNET18_5LAYERS.csv
-Loss plot saved to ../report/images/RESNET18_5LAYERS.png
--------------------
-Final on best model:
- Validation: 100%|██████████| 76/76 [00:00<00:00, 151.26it/s]
-Validation Loss:      0.1912, Validation Precision: 0.9337
- Validation: 100%|██████████| 75/75 [00:00<00:00, 147.20it/s]
- Validation: 100%|██████████| 214/214 [00:01<00:00, 142.14it/s]
-Test       precision:      0.9213
-Validation precision:      0.9337 , Train Precision: 0.9965
+ Learning Rate: 0.00025
 
+Epoch 8/50                                                    
+ Training  : 100%|█████████| 214/214 [00:02<00:00, 91.56it/s] 
+ Validation: 100%|██████████| 76/76 [00:00<00:00, 125.22it/s] 
+ Training Loss:      0.2174, Validation Loss:      0.2102     
+ Training Precision: 0.9239, Validation Precision: 0.9287     
+ Learning Rate: 0.00025                                       
+Early stopping triggered. Patience: 2                         
+Metrics saved to ../report/data/RESNET18_5LAYERS.csv          
+Loss plot saved to ../report/images/RESNET18_5LAYERS.png      
+-------------------                                           
+Final on best model:                                          
+ Validation: 100%|██████████| 76/76 [00:00<00:00, 123.19it/s] 
+ Test      : 100%|██████████| 75/75 [00:00<00:00, 119.60it/s] 
+ Train     : 100%|████████| 214/214 [00:01<00:00, 122.16it/s] 
+Validation Loss:           0.2067, Train Loss     : 0.0454    
+Validation precision:      0.9270, Train Precision: 0.9906    
+Test       precision:      0.9146                             
+End                                                           
 \end{verbatim}
 \end{tcolorbox}
 
