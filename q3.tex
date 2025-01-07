@@ -14,3 +14,97 @@ python mmn12_q3.py
 כצעד ראשון התבקשנו להגדיר \ToEn{dataloader} ולהציג מספר דוגמאות מכל מחלקה.
 תמונת הדוגמאות נוצרת בשלב מס' 1 של השאלה השלישית. 
 \CreateFigure{images/class_sample_images.jpg}{דוגמאות מתוך סט האימון עבור כל אחת מ-8 המחלקות שאותן נדרשים לסווג}
+\newline
+
+\subsection*{שיטת העבודה}
+על-מנת להגיע לתוצאות הנדרשות (90 אחוזי דיוק) נדרשו החלטות וניסויים רבים.
+
+החלטתי לבחור בטכניקה של \ToEn{Fine-Tuning} על רשת קיימת.
+במצב כזה, הרשת שאומנה על כמויות גדולות של דאטה (תמונות) למדה לחלץ פיצ'רים רלוונטיים למשימה של זיהוי וסיווג תמונות. נשאר רק לבצע כוונון עדין יותר עבור המטרה הספציפית הזאת.\newline
+כדי לבצע זאת "מקפיאים" את השכבות הראשונות ברשת, כלומר מונעים מהן להתעדכן גם בשלב האימון (לא מתבצע עליהן \ToEn{Backpropagation} וחישובי גראדיינטים). לעומת זאת השכבות האחרונות, בד"כ שכבת \ToEn{Fully Connected}, כן לומדות את הדאטה החדש ומתכווננות לפיו. \newline
+יתרונות נוספים של גישה זאת:
+\begin{itemize}
+    \item הרשת גדולה ולכן יכולה להתמודד עם משימות מתוחכמות
+    \item נשים לב שהדאטה שלנו קטן יחסית, ולכן לא מספיק לאימון מלא של רשת גדולה. באופן כללי מספר פרמטרים גדול דורש כמות גדולה יותר של מידע לאימון (אחרת הרשת תשנן את המידע)
+    \item כיוון שאנחנו מאמנים רק שכבות אחרונות, מספר הפרמטרים המאומנים קטן יותר ולכן יכול להתאים לגודל דאטה קטן
+    \item אם מספר הפרמטרים גדול מאד מגודל הדאטה, יש להקפיד על טכניקות להתמודדות עם אפשרות של \ToEn{Overfit} - כגון שימוש ברגולריזציה, \ToEn{Dropout}, ואוגמנטציה.
+    \item השימוש באוגמנטציה מאפשר גם אימון ליכולת הפשטה גבוהה יותר וגם כסוג של הגדלה מלאכותית של הדאטה.
+\end{itemize}
+
+נקודות וטכניקות שבהן השתמשתי על-מנת לשפר את ביצועי הרשת:
+
+\begin{itemize}
+    \item בחירת רשת וטכניקה של כוונון עדין
+    \item בחירת מספר אפוקים גדול מצד אחד כדי לתת לרשת אפשרות ללמוד לאורך יותר איטרציות, אבל גם עצירה מוקדמת כדי למנוע ממנה להיתקע.
+    \item בחירה נכונה של אלגוריתם \ToEn{Optimizer}. שימוש ב-\ToEn{SGD} סטנדרטי לא הביא לתוצאות טובות. לעומת זאת החלפתו באלגוריתם ממשפחת \ToEn{(Adam, AdamW)} שיפרה בהרבה את התכנסות הרשת והתוצאות הסופיות אליהן הגיעה.
+    \item בחירה נכונה של פרמטר \ToEn{Learning Rate}. בניגוד לאינטואיציה הראשונית, קצב לימוד גבוה מדי לא הביא להתכנסות מהירה יותר אלא להיפך, התכנסות איטית לתוצאות לא מוצלחות. דווקא הקטנה שלו הביאה להתכנסות אל תוצאות טובות יותר.
+    \item שינוי של גודל האצווה \ToEn{batch}, הקטנתו מאטה את החישובים אבל משפרת את ההתכנסות - בגלל
+    \item שינוי דינאמי של קצב הלימוד ע"י שימוש ב- \ToEn{Learning Rate Scheduler}. ה-\ToEn{scheduler} מאפשר להתחיל בקצב לימוד מסויים, ולהקטין אותו שוב ושוב אם הרשת לא מראה שיפור בביצועים. הדבר מאפשר לנצל קצב לימוד גבוה בהתחלה כדי לבצע התכנסות ראשונית, ולאחר מכן שיפור מקומי (שיכול להיות משמעותי מאד) בקצבים נמוכים יותר.
+    \item עצירה מוקדמת \ToEn{(Early Stopping)} - הפסקת אימון הרשת אם התוצאות מדגימות שהיא אינה משתפרת יותר, או שהשיפור נעשרה רק על סט האימון, כלומר הרשת מתחילה לבצע \ToEn{Overfitting} ואין טעם להמשיך באימון.
+    \item שימוש באוגמנטציות. עם זאת, אוגמנטציות אגרסיביות מדי פגעו מאד בביצועי הרשת - כנראה מפני שבכל זאת כמות הדאטה (בעיקר מחיצת הולידציה) קטנה מדי והרשת מבצעת \ToEn{overfit} על המידע.
+\end{itemize}
+
+ב
+
+\lstset{
+    basicstyle=\ttfamily\tiny, % Monospaced font, smallest size
+    keywordstyle=\bfseries, % Bold keywords
+    showstringspaces=false,
+    breaklines=true, % Enable line breaking
+    breakatwhitespace=true, % Break at whitespace
+    breakindent=0pt, % Prevent indentation on new lines
+    columns=fullflexible, % Preserve monospaced alignment
+    frame=single, % Add a border around the listing
+    numbers=none, % Remove line numbers
+    xleftmargin=10pt,
+    xrightmargin=10pt,
+    aboveskip=5pt, % Space above the listing
+    belowskip=5pt, % Space below the listing
+}
+
+% Define custom replacements for special characters
+\newcommand{\vertline}{\textbar} % For vertical line (|)
+\newcommand{\cornerline}{\rule{1.5ex}{0.4pt}} % Simulates ─
+\newcommand{\branch}{\textbar\cornerline} % Simulates ├─
+
+
+% Define a verbatim style
+\DefineVerbatimEnvironment{CodeBlock}{Verbatim}{
+    fontsize=\scriptsize, % Set a smaller font size
+    frame=single,         % Add a border
+    framesep=2mm,         % Reduce padding around the block
+    baselinestretch=1,    % Line spacing
+    commandchars=\\\{\},  % Allow \ to escape special characters
+}
+
+\include{networks}
+\EN
+\begin{tcolorbox}[colframe=black, colback=gray!5, boxrule=0.5mm, sharp corners]
+
+\begin{minted}{python}
+
+# Define the scheduler
+scheduler = ReduceLROnPlateau(
+    optimizer,
+    mode='min',
+    factor=0.5,
+    patience=3,
+    threshold=1e-5,
+    cooldown=2,
+    min_lr=1e-6,
+)
+
+# Use in the code:
+
+# Step the scheduler with validation loss
+scheduler.step(val_precision)
+
+# Print the current learning rate
+for param_group in optimizer.param_groups:
+    print(f" Learning Rate: {param_group['lr']}")
+\end{minted}
+\end{tcolorbox}
+
+\HE
+
+\HE
