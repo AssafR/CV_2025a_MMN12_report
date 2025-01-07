@@ -45,7 +45,64 @@ python mmn12_q3.py
     \item שימוש באוגמנטציות. עם זאת, אוגמנטציות אגרסיביות מדי פגעו מאד בביצועי הרשת - כנראה מפני שבכל זאת כמות הדאטה (בעיקר מחיצת הולידציה) קטנה מדי והרשת מבצעת \ToEn{overfit} על המידע. למשל פעולת \ToEn{GaussianBlur} שאמורה לסייע במקרים כלליים, רק הפריעה על הדאטה הקטן הספציפי שלנו.
 \end{itemize}
 
-ב
+הפרמטרים של \ToEn{Learning Scheduler} שנבחרו הם כנ"ל:
+\EN
+\begin{tcolorbox}[colframe=black, colback=gray!5, boxrule=0.5mm, sharp corners]
+\begin{minted}{python}
+# Define the scheduler
+scheduler = ReduceLROnPlateau(
+    optimizer,
+    mode='min',
+    factor=0.5,
+    patience=3,
+    threshold=1e-5,
+    cooldown=2,
+    min_lr=1e-6,
+)
+
+# Use in the code:
+
+# Step the scheduler with validation loss
+scheduler.step(val_precision)
+
+# Print the current learning rate
+for param_group in optimizer.param_groups:
+    print(f" Learning Rate: {param_group['lr']}")
+\end{minted}
+\end{tcolorbox}
+\HE
+
+
+\HE 
+\subsection*{דוגמה לפלט של הרשת בשלב סיום האימון:}
+\EN
+\begin{tcolorbox}[colframe=black, colback=gray!5, boxrule=0.5mm, sharp corners]
+\begin{verbatim}
+Epoch 9/50
+ Training  : 100%|██████████| 214/214 [00:02<00:00, 103.95it/s]
+ Validation: 100%|██████████| 76/76 [00:00<00:00, 143.95it/s]
+ Training Loss:      0.1960, Validation Loss:      0.1998
+ Training Precision: 0.9380, Validation Precision: 0.9287
+ Learning Rate: 0.000125
+Early stopping triggered. Patience: 2
+Metrics saved to ../report/data/RESNET18_5LAYERS.csv
+Loss plot saved to ../report/images/RESNET18_5LAYERS.png
+-------------------
+Final on best model:
+ Validation: 100%|██████████| 76/76 [00:00<00:00, 151.26it/s]
+Validation Loss:      0.1912, Validation Precision: 0.9337
+ Validation: 100%|██████████| 75/75 [00:00<00:00, 147.20it/s]
+ Validation: 100%|██████████| 214/214 [00:01<00:00, 142.14it/s]
+Test       precision:      0.9213
+Validation precision:      0.9337 , Train Precision: 0.9965
+
+\end{verbatim}
+\end{tcolorbox}
+
+\HE
+בעמוד הבא ניתן לראות עבור שתי רשתות שנבדקו, מהו מבנה הרשת - כולל אילו שכבות נשארו לא מוקפאות ומה מספר הפרמטרים שלהן.\newline
+התוצאות הסופיות שנבחרו הן מהרשת \ToEn{RESNET18\_5LAYERS} , כלומר רשת המבוססת על המשקלות של \ToEn{Resnet18}, אבל עם חמש שכבות אחרונות שניתנות לאימון. שכבות אלה שקולות לבלוק הבסיסי בשכבה הסדרתית האחרונה ולאחריה החלק הלינארי.\newline
+בגרסת \ToEn{RESNET18\_2LAYERS}, רק השכבה הלינארית האחרונה היא זו שמתאמנת.
 
 \lstset{
     basicstyle=\ttfamily\tiny, % Monospaced font, smallest size
@@ -80,60 +137,11 @@ python mmn12_q3.py
 
 \include{networks}
 \EN
-\begin{tcolorbox}[colframe=black, colback=gray!5, boxrule=0.5mm, sharp corners]
-
-\begin{minted}{python}
-
-# Define the scheduler
-scheduler = ReduceLROnPlateau(
-    optimizer,
-    mode='min',
-    factor=0.5,
-    patience=3,
-    threshold=1e-5,
-    cooldown=2,
-    min_lr=1e-6,
-)
-
-# Use in the code:
-
-# Step the scheduler with validation loss
-scheduler.step(val_precision)
-
-# Print the current learning rate
-for param_group in optimizer.param_groups:
-    print(f" Learning Rate: {param_group['lr']}")
-\end{minted}
-\end{tcolorbox}
-\HE 
-\subsection*{דוגמה לפלט של הרשת בשלב סיום האימון:}
-\EN
-\begin{tcolorbox}[colframe=black, colback=gray!5, boxrule=0.5mm, sharp corners]
-\begin{verbatim}
-Epoch 9/50
- Training  : 100%|██████████| 214/214 [00:02<00:00, 103.95it/s]
- Validation: 100%|██████████| 76/76 [00:00<00:00, 143.95it/s]
- Training Loss:      0.1960, Validation Loss:      0.1998
- Training Precision: 0.9380, Validation Precision: 0.9287
- Learning Rate: 0.000125
-Early stopping triggered. Patience: 2
-Metrics saved to ../report/data/RESNET18_5LAYERS.csv
-Loss plot saved to ../report/images/RESNET18_5LAYERS.png
--------------------
-Final on best model:
- Validation: 100%|██████████| 76/76 [00:00<00:00, 151.26it/s]
-Validation Loss:      0.1912, Validation Precision: 0.9337
- Validation: 100%|██████████| 75/75 [00:00<00:00, 147.20it/s]
- Validation: 100%|██████████| 214/214 [00:01<00:00, 142.14it/s]
-Test       precision:      0.9213
-Validation precision:      0.9337 , Train Precision: 0.9965
-
-\end{verbatim}
-\end{tcolorbox}
 
 \newpage
 \HE
-\subsection*{הביצועים על סט הבדיקה:}
+\subsection*{
+חשבו את הביצועים על סט הבדיקה. יש להציג את הדיוק, גרף של \ToEn{ROC} וגרף של \ToEn{Precision-Recall}.}
 \CreateFigure{images/roc_curve_global_RESNET18_5LAYERS_test.png}{עקום \ToEn{ROC}}
 \CreateFigure{images/prc_curve_global_RESNET18_5LAYERS_test.png}{עקום \ToEn{Precision-Recall}}
 \CreateFigure{images/confusion_matrix_VGG_XGB2_test.png}{מטריצת הבלבול}
@@ -141,10 +149,17 @@ Validation precision:      0.9337 , Train Precision: 0.9965
 
 \CreateFigure{images/RESNET18_5LAYERS.png}{דוגמה להתקדמות \ToEn{Train/Validation} לאורך תהליך האימון:}
 
-\subsection*{הציגו גרף של ערכי ה- \ToEn{lossעל} סט הוולידציה והאימון עבור מקרה של .\ToEn{over-fitting}}
+\HE
+\subsection*{הציגו גרף של ערכי ה- \ToEn{loss}על סט הוולידציה והאימון עבור מקרה של \ToEn{over-fitting}.}
+\HE
+במקרה הזה יש \ToEn{over-fitting} משילוב של הסיבות הבאות:
+\begin{itemize}
+    \item רשת פשוטה מדי \ToEn{(VGG16)}
+    \item אוגמנטציות עדינות מאד
+    \item תהליך אימון ממושך מדי ללא \ToEn{Early Stopping}
+\end{itemize}
 
-
-\CreateFigure{images/VGG16.png}{דוגמה להתקדמות \ToEn{Train/Validation} לאורך תהליך האימון:}
+\CreateFigure{images/VGG16.png}{דוגמה להתקדמות \ToEn{Train/Validation} לאורך תהליך האימון}
 
 
 \HE
