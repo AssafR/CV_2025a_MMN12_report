@@ -1,0 +1,9 @@
+,coast,forest,highway,insidecity,mountain,opencountry,street,tallbuilding
+coast,49,5,1,0,3,1,0,0
+forest,4,35,0,0,1,9,0,2
+highway,17,1,33,0,0,2,4,0
+insidecity,0,0,0,54,0,0,4,3
+mountain,15,1,0,0,50,4,0,0
+opencountry,16,44,5,0,8,25,0,5
+street,0,0,2,7,0,0,59,0
+tallbuilding,3,0,3,0,0,0,3,60
