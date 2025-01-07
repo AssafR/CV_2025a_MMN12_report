@@ -17,12 +17,13 @@ python mmn12_q3.py
 \newline
 
 \subsection*{שיטת העבודה}
-על-מנת להגיע לתוצאות הנדרשות (90 אחוזי דיוק) נדרשו החלטות וניסויים רבים.
+על-מנת להגיע לתוצאות הנדרשות (90 אחוזי דיוק - הבנתי זאת בתור \ToEn{precision}) נדרשו החלטות וניסויים רבים.
 
 החלטתי לבחור בטכניקה של \ToEn{Fine-Tuning} על רשת קיימת.
 במצב כזה, הרשת שאומנה על כמויות גדולות של דאטה (תמונות) למדה לחלץ פיצ'רים רלוונטיים למשימה של זיהוי וסיווג תמונות. נשאר רק לבצע כוונון עדין יותר עבור המטרה הספציפית הזאת.\newline
 כדי לבצע זאת "מקפיאים" את השכבות הראשונות ברשת, כלומר מונעים מהן להתעדכן גם בשלב האימון (לא מתבצע עליהן \ToEn{Backpropagation} וחישובי גראדיינטים). לעומת זאת השכבות האחרונות, בד"כ שכבת \ToEn{Fully Connected}, כן לומדות את הדאטה החדש ומתכווננות לפיו. \newline
-יתרונות נוספים של גישה זאת:
+
+\subsection*{יתרונות נוספים של גישה זאת:}
 \begin{itemize}
     \item הרשת גדולה ולכן יכולה להתמודד עם משימות מתוחכמות
     \item נשים לב שהדאטה שלנו קטן יחסית, ולכן לא מספיק לאימון מלא של רשת גדולה. באופן כללי מספר פרמטרים גדול דורש כמות גדולה יותר של מידע לאימון (אחרת הרשת תשנן את המידע)
@@ -38,10 +39,10 @@ python mmn12_q3.py
     \item בחירת מספר אפוקים גדול מצד אחד כדי לתת לרשת אפשרות ללמוד לאורך יותר איטרציות, אבל גם עצירה מוקדמת כדי למנוע ממנה להיתקע.
     \item בחירה נכונה של אלגוריתם \ToEn{Optimizer}. שימוש ב-\ToEn{SGD} סטנדרטי לא הביא לתוצאות טובות. לעומת זאת החלפתו באלגוריתם ממשפחת \ToEn{(Adam, AdamW)} שיפרה בהרבה את התכנסות הרשת והתוצאות הסופיות אליהן הגיעה.
     \item בחירה נכונה של פרמטר \ToEn{Learning Rate}. בניגוד לאינטואיציה הראשונית, קצב לימוד גבוה מדי לא הביא להתכנסות מהירה יותר אלא להיפך, התכנסות איטית לתוצאות לא מוצלחות. דווקא הקטנה שלו הביאה להתכנסות אל תוצאות טובות יותר.
-    \item שינוי של גודל האצווה \ToEn{batch}, הקטנתו מאטה את החישובים אבל משפרת את ההתכנסות - בגלל
+    \item שינוי של גודל האצווה \ToEn{(batch)}, הקטנתו מאטה את החישובים אבל משפרת את ההתכנסות - בגלל
     \item שינוי דינאמי של קצב הלימוד ע"י שימוש ב- \ToEn{Learning Rate Scheduler}. ה-\ToEn{scheduler} מאפשר להתחיל בקצב לימוד מסויים, ולהקטין אותו שוב ושוב אם הרשת לא מראה שיפור בביצועים. הדבר מאפשר לנצל קצב לימוד גבוה בהתחלה כדי לבצע התכנסות ראשונית, ולאחר מכן שיפור מקומי (שיכול להיות משמעותי מאד) בקצבים נמוכים יותר.
     \item עצירה מוקדמת \ToEn{(Early Stopping)} - הפסקת אימון הרשת אם התוצאות מדגימות שהיא אינה משתפרת יותר, או שהשיפור נעשרה רק על סט האימון, כלומר הרשת מתחילה לבצע \ToEn{Overfitting} ואין טעם להמשיך באימון.
-    \item שימוש באוגמנטציות. עם זאת, אוגמנטציות אגרסיביות מדי פגעו מאד בביצועי הרשת - כנראה מפני שבכל זאת כמות הדאטה (בעיקר מחיצת הולידציה) קטנה מדי והרשת מבצעת \ToEn{overfit} על המידע.
+    \item שימוש באוגמנטציות. עם זאת, אוגמנטציות אגרסיביות מדי פגעו מאד בביצועי הרשת - כנראה מפני שבכל זאת כמות הדאטה (בעיקר מחיצת הולידציה) קטנה מדי והרשת מבצעת \ToEn{overfit} על המידע. למשל פעולת \ToEn{GaussianBlur} שאמורה לסייע במקרים כלליים, רק הפריעה על הדאטה הקטן הספציפי שלנו.
 \end{itemize}
 
 ב
@@ -104,14 +105,46 @@ for param_group in optimizer.param_groups:
     print(f" Learning Rate: {param_group['lr']}")
 \end{minted}
 \end{tcolorbox}
+\HE 
+\subsection*{דוגמה לפלט של הרשת בשלב סיום האימון:}
+\EN
+\begin{tcolorbox}[colframe=black, colback=gray!5, boxrule=0.5mm, sharp corners]
+\begin{verbatim}
+Epoch 9/50
+ Training  : 100%|██████████| 214/214 [00:02<00:00, 103.95it/s]
+ Validation: 100%|██████████| 76/76 [00:00<00:00, 143.95it/s]
+ Training Loss:      0.1960, Validation Loss:      0.1998
+ Training Precision: 0.9380, Validation Precision: 0.9287
+ Learning Rate: 0.000125
+Early stopping triggered. Patience: 2
+Metrics saved to ../report/data/RESNET18_5LAYERS.csv
+Loss plot saved to ../report/images/RESNET18_5LAYERS.png
+-------------------
+Final on best model:
+ Validation: 100%|██████████| 76/76 [00:00<00:00, 151.26it/s]
+Validation Loss:      0.1912, Validation Precision: 0.9337
+ Validation: 100%|██████████| 75/75 [00:00<00:00, 147.20it/s]
+ Validation: 100%|██████████| 214/214 [00:01<00:00, 142.14it/s]
+Test       precision:      0.9213
+Validation precision:      0.9337 , Train Precision: 0.9965
+
+\end{verbatim}
+\end{tcolorbox}
 
 \newpage
 \HE
+\subsection*{הביצועים על סט הבדיקה:}
 \CreateFigure{images/roc_curve_global_RESNET18_5LAYERS_test.png}{עקום \ToEn{ROC}}
 \CreateFigure{images/prc_curve_global_RESNET18_5LAYERS_test.png}{עקום \ToEn{Precision-Recall}}
 \CreateFigure{images/confusion_matrix_VGG_XGB2_test.png}{מטריצת הבלבול}
 \clearpage
 
+\CreateFigure{images/RESNET18_5LAYERS.png}{דוגמה להתקדמות \ToEn{Train/Validation} לאורך תהליך האימון:}
+
+\subsection*{הציגו גרף של ערכי ה- \ToEn{lossעל} סט הוולידציה והאימון עבור מקרה של .\ToEn{over-fitting}}
+
+
+\CreateFigure{images/VGG16.png}{דוגמה להתקדמות \ToEn{Train/Validation} לאורך תהליך האימון:}
 
 
 \HE
